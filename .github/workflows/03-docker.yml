@@ -1,0 +1,57 @@
+name: 03 · Docker — Build & Push
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+
+env:
+  REGISTRY: ghcr.io
+  # IMAGE_NAME формируется автоматически из имени репозитория
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    # TODO: [Задание 1] Укажите минимальные permissions для этого job.
+    #   Нужно: читать код (contents: read) и пушить пакеты (packages: write).
+    permissions:
+      # TODO
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO: [Задание 2] Добавьте шаг авторизации в GitHub Container Registry.
+      #   Action: docker/login-action@v3
+      #   registry: ${{ env.REGISTRY }}
+      #   username: ${{ github.actor }}
+      #   password: используйте встроенный GITHUB_TOKEN (не нужен отдельный secret)
+      - name: Log in to GHCR
+        # TODO
+
+      # TODO: [Задание 3] Добавьте шаг для генерации Docker-тегов и labels.
+      #   Action: docker/metadata-action@v5
+      #   images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      #   Настройте теги:
+      #     - sha префикс (короткий git sha)
+      #     - latest для default branch
+      #     - semver при наличии тега версии
+      - name: Extract Docker metadata
+        id: meta
+        # TODO
+
+      # TODO: [Задание 4] Включите Docker Buildx для поддержки BuildKit.
+      #   Action: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        # TODO
+
+      # TODO: [Задание 5] Добавьте шаг сборки и публикации образа.
+      #   Action: docker/build-push-action@v6
+      #   context: kotlin-project  (папка с Dockerfile)
+      #   push: true
+      #   tags: используйте outputs из шага meta
+      #   labels: используйте outputs из шага meta
+      #   Включите кэш BuildKit (cache-from/cache-to type=gha)
+      - name: Build and push
+        # TODO

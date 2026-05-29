@@ -1,0 +1,60 @@
+name: 01 · CI — Build & Test
+
+# TODO: [Задание 1] Настройте триггеры workflow:
+#   - запускать при push в ветки main и develop
+#   - запускать при открытии pull_request в ветку main
+on:
+  # TODO: заполните секцию on
+  push:
+    branches: []      # <-- укажите нужные ветки
+  pull_request:
+    branches: []      # <-- укажите нужные ветки
+
+jobs:
+  build-and-test:
+    # TODO: [Задание 2] Укажите операционную систему для runner.
+    #   Используйте последнюю версию Ubuntu.
+    runs-on: # TODO
+
+    steps:
+      # TODO: [Задание 3] Добавьте шаг для клонирования репозитория.
+      #   Используйте официальный action: actions/checkout@v4
+      - name: Checkout code
+        # TODO: uses: ...
+
+      # TODO: [Задание 4] Добавьте шаг для настройки JDK 21.
+      #   Action: actions/setup-java@v4
+      #   Параметры: java-version: '21', distribution: 'temurin'
+      - name: Set up JDK 21
+        # TODO: uses: ...
+        # TODO: with: ...
+
+      # TODO: [Задание 5] Добавьте кэширование Gradle-зависимостей.
+      #   Action: actions/cache@v4
+      #   Кэшируйте директории ~/.gradle/caches и ~/.gradle/wrapper.
+      #   Ключ кэша должен включать ОС и хэш файлов *.gradle.kts.
+      - name: Cache Gradle packages
+        # TODO: uses: ...
+        # TODO: with: ...
+
+      # TODO: [Задание 6] Добавьте шаг сборки проекта.
+      #   Команда: ./gradlew build --no-daemon
+      #   Укажите working-directory: kotlin-project
+      - name: Build
+        # TODO: working-directory: ...
+        # TODO: run: ...
+
+      # TODO: [Задание 7] Добавьте шаг запуска тестов.
+      #   Команда: ./gradlew test --no-daemon
+      - name: Run tests
+        # TODO
+
+      # TODO: [Задание 8] Сохраните HTML-отчёт о тестах как артефакт.
+      #   Action: actions/upload-artifact@v4
+      #   Имя артефакта: test-report
+      #   Путь: kotlin-project/build/reports/tests/test/
+      #   Сохраняйте артефакт ВСЕГДА, даже при падении тестов (if: always())
+      - name: Upload test report
+        # TODO: if: ...
+        # TODO: uses: ...
+        # TODO: with: ...

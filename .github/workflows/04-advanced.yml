@@ -1,0 +1,86 @@
+name: 04 · Advanced — Concurrency, Environments, Reusable
+
+on:
+  push:
+    branches: [main]
+
+# TODO: [Задание 1] Настройте concurrency так, чтобы при новом push
+#   в ту же ветку предыдущий запущенный пайплайн автоматически отменялся.
+#   Группу сформируйте из имени workflow и ref ветки.
+# concurrency:
+#   group: TODO
+#   cancel-in-progress: TODO
+
+jobs:
+
+  # ── Задание 2: Environments ──────────────────────────────────────────────
+  deploy-staging:
+    runs-on: ubuntu-latest
+
+    # TODO: [Задание 2] Привяжите job к environment "staging".
+    #   Укажите также url среды: https://staging.example.com
+    # environment:
+    #   TODO
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to staging
+        run: echo "Deploying to staging..."
+
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+
+    # TODO: [Задание 3] Привяжите job к environment "production".
+    #   В настройках репозитория добавьте Required reviewers для этого environment —
+    #   тогда деплой в prod потребует ручного подтверждения.
+    # environment:
+    #   TODO
+
+    steps:
+      - name: Deploy to production
+        run: echo "Deploying to production..."
+
+  # ── Задание 4: Reusable workflow ─────────────────────────────────────────
+
+  # TODO: [Задание 4] Создайте новый файл reusable-test.yml (workflow_call),
+  #   который принимает input java-version (default: '21') и запускает тесты.
+  #   Затем вызовите его из этого workflow ниже.
+  #
+  #   Структура вызова:
+  #   run-tests:
+  #     uses: ./.github/workflows/reusable-test.yml
+  #     with:
+  #       java-version: '21'
+
+  # ── Задание 5: Conditional + expressions ─────────────────────────────────
+  conditional-demo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO: [Задание 5a] Добавьте условие — этот шаг должен выполняться
+      #   ТОЛЬКО если текущая ветка — main.
+      - name: Only on main
+        # TODO: if: ...
+        run: echo "This is main branch"
+
+      # TODO: [Задание 5b] Добавьте шаг, который задаёт динамический output.
+      #   Формат: echo "value=<что-то>" >> $GITHUB_OUTPUT
+      #   Затем используйте этот output в следующем шаге.
+      - name: Generate version
+        id: version
+        run: |
+          # TODO: запишите в output значение вида: 20240101-${{ github.run_number }}
+
+      - name: Use version
+        run: |
+          # TODO: выведите значение из steps.version.outputs.value
+
+  # ── Задание 6: Slack notification ────────────────────────────────────────
+
+  # TODO: [Задание 6] Добавьте job, который отправляет Slack-уведомление
+  #   при падении ЛЮБОГО из предыдущих jobs.
+  #   Условие: needs: [...], if: failure()
+  #   Action: slackapi/slack-github-action@v2
+  #   Webhook берётся из secrets.SLACK_WEBHOOK

@@ -1,0 +1,64 @@
+name: 02 · Matrix — Multi-JDK & Multi-OS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test-matrix:
+    # TODO: [Задание 1] Настройте matrix strategy для запуска тестов
+    #   на нескольких комбинациях JDK и ОС одновременно.
+    #
+    #   Требования:
+    #   - java-version: протестировать на JDK 17, 21 и 23
+    #   - os: протестировать на ubuntu-latest и windows-latest
+    #   - fail-fast: false (не прерывать остальные jobs при первом падении)
+    #
+    #   Итого должно запуститься 6 параллельных jobs.
+    strategy:
+      matrix:
+        # TODO: заполните matrix
+      # TODO: fail-fast: ...
+
+    # TODO: [Задание 2] Укажите runs-on через переменную matrix.
+    #   Подсказка: ${{ matrix.os }}
+    runs-on: # TODO
+
+    # TODO: [Задание 3] Задайте имя job, чтобы в UI было видно
+    #   какая комбинация выполняется. Например: "JDK 21 / ubuntu-latest"
+    name: # TODO
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO: [Задание 4] Настройте JDK из переменной matrix.
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: # TODO: ${{ matrix.??? }}
+          distribution: 'temurin'
+
+      # TODO: [Задание 5] Добавьте кэш Gradle.
+      #   Ключ кэша должен включать: OS, версию JDK и хэш *.gradle.kts файлов.
+      #   Это важно — разные JDK могут использовать разные кэши.
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: # TODO: составьте ключ с runner.os, matrix.java-version и hashFiles
+
+      - name: Test
+        working-directory: kotlin-project
+        run: ./gradlew test --no-daemon
+
+      # TODO: [Задание 6] Загрузите результаты тестов как артефакт.
+      #   Имя артефакта должно быть уникальным для каждой комбинации matrix.
+      #   Например: test-results-jdk21-ubuntu-latest
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: # TODO: сформируйте уникальное имя через переменные matrix
+          path: kotlin-project/build/reports/tests/test/
