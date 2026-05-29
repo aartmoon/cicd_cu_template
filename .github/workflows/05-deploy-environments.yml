@@ -1,0 +1,65 @@
+name: 05 · Deploy — Staging → Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+
+    # TODO: [Задание 1] Привяжите job к environment "staging".
+    #   Укажите url среды: https://staging.example.com
+    #   Синтаксис:
+    #     environment:
+    #       name: <имя>
+    #       url: <адрес>
+    # environment:
+    #   TODO
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO: [Задание 2] Добавьте шаг деплоя на staging через SSH.
+      #   Используйте secrets: STAGING_HOST и STAGING_SSH_KEY.
+      #   Объявите их через секцию env: на уровне шага.
+      #   Команды деплоя закомментируйте — достаточно echo-заглушки.
+      - name: Deploy to staging
+        # TODO: env: ...
+        run: echo "Deploying to staging..."
+
+      # TODO: [Задание 3] Добавьте smoke-тест после деплоя на staging.
+      #   Пример команды: curl -f https://staging.example.com/health
+      #   Достаточно echo-заглушки с комментарием.
+      - name: Run smoke test against staging
+        run: |
+          # TODO
+
+  # Деплой в prod запускается только после успешного staging
+  deploy-production:
+    # TODO: [Задание 4] Укажите зависимость от deploy-staging.
+    # needs: TODO
+    runs-on: ubuntu-latest
+
+    # TODO: [Задание 5] Привяжите job к environment "production".
+    #   В Settings → Environments → production добавьте Required reviewers —
+    #   тогда workflow остановится и будет ждать ручного одобрения перед деплоем.
+    # environment:
+    #   TODO
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to production
+        env:
+          DEPLOY_HOST: ${{ secrets.PROD_HOST }}
+          DEPLOY_KEY: ${{ secrets.PROD_SSH_KEY }}
+        run: echo "Deploying to production..."
+
+      # TODO: [Задание 6] Добавьте шаг уведомления об успешном деплое.
+      #   Условие: if: success()
+      #   Выведите сообщение с github.sha
+      - name: Notify on success
+        # TODO: if: ...
+        run: |
+          # TODO: echo "Production deploy successful — ${{ github.sha }}"
