@@ -6,48 +6,57 @@ name: 01 · CI — Build & Test
 on:
   # TODO: заполните секцию on
   push:
-    branches: []      # <-- укажите нужные ветки
+    branches: [main, dev]      # <-- укажите нужные ветки
   pull_request:
-    branches: []      # <-- укажите нужные ветки
+    branches: [main]      # <-- укажите нужные ветки
 
 jobs:
   build-and-test:
     # TODO: [Задание 2] Укажите операционную систему для runner.
     #   Используйте последнюю версию Ubuntu.
-    runs-on: # TODO
+    runs-on: ubuntu-latest
 
     steps:
       # TODO: [Задание 3] Добавьте шаг для клонирования репозитория.
       #   Используйте официальный action: actions/checkout@v4
       - name: Checkout code
-        # TODO: uses: ...
+        uses: actions/checkout@v4
 
       # TODO: [Задание 4] Добавьте шаг для настройки JDK 21.
       #   Action: actions/setup-java@v4
       #   Параметры: java-version: '21', distribution: 'temurin'
       - name: Set up JDK 21
-        # TODO: uses: ...
-        # TODO: with: ...
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
 
       # TODO: [Задание 5] Добавьте кэширование Gradle-зависимостей.
       #   Action: actions/cache@v4
       #   Кэшируйте директории ~/.gradle/caches и ~/.gradle/wrapper.
       #   Ключ кэша должен включать ОС и хэш файлов *.gradle.kts.
       - name: Cache Gradle packages
-        # TODO: uses: ...
-        # TODO: with: ...
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       # TODO: [Задание 6] Добавьте шаг сборки проекта.
       #   Команда: ./gradlew build --no-daemon
       #   Укажите working-directory: kotlin-project
       - name: Build
-        # TODO: working-directory: ...
-        # TODO: run: ...
+        working-directory: kotlin-project
+        run: ./gradlew build --no-daemon
 
       # TODO: [Задание 7] Добавьте шаг запуска тестов.
       #   Команда: ./gradlew test --no-daemon
       - name: Run tests
-        # TODO
+        working-directory: kotlin-project
+        run: ./gradlew test --no-daemon
 
       # TODO: [Задание 8] Сохраните HTML-отчёт о тестах как артефакт.
       #   Action: actions/upload-artifact@v4
@@ -55,6 +64,8 @@ jobs:
       #   Путь: kotlin-project/build/reports/tests/test/
       #   Сохраняйте артефакт ВСЕГДА, даже при падении тестов (if: always())
       - name: Upload test report
-        # TODO: if: ...
-        # TODO: uses: ...
-        # TODO: with: ...
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: kotlin-project/build/reports/tests/test/

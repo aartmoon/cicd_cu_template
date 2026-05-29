@@ -16,71 +16,71 @@ class TaskManagerTest {
         manager = TaskManager()
     }
 
-    // TODO: [Задание 1] Напишите тест, который проверяет:
-    //   - addTask создаёт задачу со статусом TODO
-    //   - title задачи совпадает с переданным
     @Test
-    fun `addTask creates task with correct title and TODO status`() {
-        TODO("Реализуйте тест")
+    fun `addTask creates task with TODO status`() {
+        val task = manager.addTask("Write tests")
+        assertEquals("Write tests", task.title)
+        assertEquals(TaskStatus.TODO, task.status)
     }
 
-    // TODO: [Задание 2] Напишите тест на последовательное присвоение id.
-    //   Добавьте две задачи и убедитесь, что id = 1 и id = 2.
     @Test
     fun `addTask assigns sequential ids`() {
-        TODO("Реализуйте тест")
+        val first = manager.addTask("First")
+        val second = manager.addTask("Second")
+        assertEquals(1, first.id)
+        assertEquals(2, second.id)
     }
 
-    // TODO: [Задание 3] Проверьте, что addTask обрезает пробелы у title.
     @Test
     fun `addTask trims whitespace from title`() {
-        TODO("Реализуйте тест")
+        val task = manager.addTask(" trimmed ")
+        assertEquals("trimmed", task.title)
     }
 
-    // TODO: [Задание 4] Проверьте, что addTask бросает IllegalArgumentException
-    //   при передаче пустой строки или строки из пробелов.
     @Test
     fun `addTask throws on blank title`() {
-        TODO("Реализуйте тест")
+        assertThrows<IllegalArgumentException> { manager.addTask(" ") }
     }
 
-    // TODO: [Задание 5] Проверьте, что updateStatus меняет статус задачи.
     @Test
     fun `updateStatus changes task status`() {
-        TODO("Реализуйте тест")
+        val task = manager.addTask("Deploy")
+        val updated = manager.updateStatus(task.id, TaskStatus.IN_PROGRESS)
+        assertEquals(TaskStatus.IN_PROGRESS, updated.status)
     }
 
-    // TODO: [Задание 6] Проверьте, что updateStatus бросает IllegalStateException
-    //   при несуществующем id (например, 999).
     @Test
     fun `updateStatus throws when task not found`() {
-        TODO("Реализуйте тест")
+        assertThrows<IllegalStateException> { manager.updateStatus(999, TaskStatus.DONE) }
     }
 
-    // TODO: [Задание 7] Добавьте несколько задач с разными статусами.
-    //   Проверьте, что getByStatus возвращает только задачи с нужным статусом.
     @Test
     fun `getByStatus returns only matching tasks`() {
-        TODO("Реализуйте тест")
+        manager.addTask("A")
+        val b = manager.addTask("B")
+        manager.updateStatus(b.id, TaskStatus.DONE)
+
+        val done = manager.getByStatus(TaskStatus.DONE)
+        assertEquals(1, done.size)
+        assertEquals("B", done.first().title)
     }
 
-    // TODO: [Задание 8] Проверьте, что getAll возвращает все добавленные задачи.
     @Test
     fun `getAll returns all tasks`() {
-        TODO("Реализуйте тест")
+        manager.addTask("X")
+        manager.addTask("Y")
+        assertEquals(2, manager.getAll().size)
     }
 
-    // TODO: [Задание 9] Проверьте, что remove удаляет задачу по id
-    //   и возвращает true. После удаления getAll должен вернуть пустой список.
     @Test
     fun `remove deletes task by id`() {
-        TODO("Реализуйте тест")
+        val task = manager.addTask("To remove")
+        assertTrue(manager.remove(task.id))
+        assertTrue(manager.getAll().isEmpty())
     }
 
-    // TODO: [Задание 10] Проверьте, что remove возвращает false
-    //   при несуществующем id.
     @Test
     fun `remove returns false for unknown id`() {
-        TODO("Реализуйте тест")
+        assertFalse(manager.remove(42))
     }
 }

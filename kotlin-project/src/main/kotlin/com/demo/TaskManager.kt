@@ -10,6 +10,7 @@ data class Task(
 
 class TaskManager {
     private val tasks = mutableListOf<Task>()
+
     private var nextId = 1
 
     fun addTask(title: String): Task {
