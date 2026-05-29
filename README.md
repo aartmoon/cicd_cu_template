@@ -27,6 +27,32 @@ cd kotlin-project
 ./gradlew test
 ```
 
+
+
+
+### 1.1 Если Gradle установлен локально — одна команда из папки проекта:
+
+`cd kotlin-project`
+`gradle wrapper --gradle-version 8.11.1`
+
+Это сгенерирует все четыре файла: gradlew, gradlew.bat, gradle/wrapper/gradle-wrapper.jar, gradle/wrapper/gradle-wrapper.properties.
+
+
+### 1.2 Если Gradle не установлен, то через Docker:
+
+`docker run --rm -v "$(pwd)/kotlin-project:/project" -w /project \
+gradle:8.11.1-jdk21 gradle wrapper`
+
+
+### 2 После этого сделать gradlew исполняемым (Mac/Linux):
+
+`chmod +x kotlin-project/gradlew`
+
+И закоммитить всё включая бинарный JAR:
+
+`git add kotlin-project/gradlew kotlin-project/gradlew.bat kotlin-project/gradle/`
+`git commit -m "Add Gradle wrapper"`
+`git push`
 ## Полезные ссылки
 
 - [GitHub Actions документация](https://docs.github.com/en/actions)

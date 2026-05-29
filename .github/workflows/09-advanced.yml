@@ -1,0 +1,107 @@
+name: 09 · Advanced — Concurrency, OIDC, Security
+
+on:
+  push:
+    branches: [main]
+
+# TODO: [Задание 1] Задайте минимальные permissions на уровне всего workflow.
+#   Используйте: contents: read
+#   Это принцип наименьших привилегий — job может расширить permissions,
+#   но не сузить ниже этого уровня.
+# permissions:
+#   TODO
+
+# TODO: [Задание 2] Настройте concurrency для отмены устаревших пайплайнов.
+#   group: сформируйте из ${{ github.workflow }} и ${{ github.ref }}
+#   cancel-in-progress: true
+# concurrency:
+#   TODO
+
+jobs:
+  # ── OIDC ─────────────────────────────────────────────────────────────────
+  deploy-with-oidc:
+    runs-on: ubuntu-latest
+
+    # TODO: [Задание 3] Укажите permissions для получения OIDC-токена.
+    #   Нужно: id-token: write и contents: read
+    # permissions:
+    #   TODO
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO: [Задание 4] Добавьте шаг авторизации в AWS через OIDC.
+      #   Action: aws-actions/configure-aws-credentials@v4
+      #   role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+      #   aws-region: eu-central-1
+      #   Без OIDC пришлось бы хранить AWS_SECRET_ACCESS_KEY в secrets навсегда.
+      - name: Configure AWS credentials via OIDC
+        # TODO
+
+      - name: Push to ECR
+        run: echo "Authenticated to AWS without long-lived credentials"
+
+  # ── Pinned SHA ────────────────────────────────────────────────────────────
+  security-pinned:
+    runs-on: ubuntu-latest
+    steps:
+      # TODO: [Задание 5] Замените теги actions на pinned SHA-хэши.
+      #   Тег вида @v4 можно переписать — SHA неизменяем.
+      #   actions/checkout v4.2.2  → SHA: 11bd71901bbe5b1630ceea73d27597364c9af683
+      #   actions/setup-java v4.7.1 → SHA: c5195efecf7bdfc987ee8bae7a71cb8b11521c00
+      - uses: actions/checkout@v4                  # TODO: замените на SHA
+      - uses: actions/setup-java@v4                # TODO: замените на SHA
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build
+        working-directory: kotlin-project
+        run: ./gradlew build --no-daemon
+
+  # ── Conditional steps & expressions ──────────────────────────────────────
+  conditional-steps:
+    runs-on: ubuntu-latest
+
+    # TODO: [Задание 6] Задайте env-переменную APP_ENV на уровне job.
+    #   Значение: 'production' если ветка main, иначе 'staging'.
+    #   Используйте тернарное выражение GitHub Actions:
+    #     ${{ condition && 'value_if_true' || 'value_if_false' }}
+    # env:
+    #   APP_ENV: TODO
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO: [Задание 7] Шаг должен выполняться только на ветке main.
+      - name: Only on main branch
+        # TODO: if: ...
+        run: echo "Running on main"
+
+      # TODO: [Задание 8] Шаг должен выполняться только при пуше тега.
+      - name: Only on tags
+        # TODO: if: startsWith(...)
+        run: echo "Tag release detected"
+
+      # TODO: [Задание 9] Запишите динамический output в шаге с id: version.
+      #   Формат: echo "value=<дата>-${{ github.run_number }}" >> $GITHUB_OUTPUT
+      #   В следующем шаге используйте ${{ steps.version.outputs.value }}
+      - name: Set dynamic output
+        id: version
+        run: |
+          # TODO
+
+      - name: Use dynamic output
+        run: |
+          # TODO: echo "Build version: ${{ steps.version.outputs.value }}"
+
+  # ── Slack notify on failure ───────────────────────────────────────────────
+
+  # TODO: [Задание 10] Добавьте job notify-on-failure.
+  #   needs: все три job выше
+  #   if: failure()
+  #   Action: slackapi/slack-github-action@v2
+  #   webhook: ${{ secrets.SLACK_WEBHOOK }}
+  #   webhook-type: incoming-webhook
+  #   В payload передайте ссылку на упавший run:
+  #     ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
