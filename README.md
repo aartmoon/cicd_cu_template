@@ -13,8 +13,12 @@ Kotlin-проект с заготовками GitHub Actions workflows. Ваша
 |------|------|---------|
 | `01-ci.yml` | Базовый CI: триггеры, JDK, Gradle cache, артефакты | 8 |
 | `02-matrix.yml` | Matrix strategy: несколько JDK и ОС параллельно | 6 |
-| `03-docker.yml` | Docker: сборка и push в GHCR | 5 |
-| `04-advanced.yml` | Concurrency, environments, reusable, conditions, Slack | 6 |
+| `03-artifacts.yml` | Artifacts: передача между jobs, GitHub Release | 7 |
+| `04-docker.yml` | Docker: сборка и push в GHCR | 5 |
+| `05-advanced.yml` | Concurrency, environments, conditions, Slack | 6 |
+| `06-repo-automation.yml` | Auto-label, stale bot, workflow_dispatch, GitHub Script | 8 |
+| `07-reusable-workflow.yml` | Reusable workflow: inputs, secrets, outputs | 8 |
+| `08-caller.yml` | Вызов reusable workflow и использование outputs | 2 |
 
 ## Запуск тестов локально
 

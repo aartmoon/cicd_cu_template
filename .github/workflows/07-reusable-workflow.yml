@@ -1,0 +1,70 @@
+name: 06 · Reusable — Kotlin Test (called)
+
+# TODO: [Задание 1] Замените триггер на workflow_call — это объявит файл
+#   переиспользуемым workflow, который можно вызвать из другого workflow.
+#
+#   Структура workflow_call:
+#     on:
+#       workflow_call:
+#         inputs:
+#           <имя>:
+#             type: string | boolean | number
+#             required: true | false
+#             default: <значение>
+#         secrets:
+#           <имя>:
+#             required: true | false
+#         outputs:
+#           <имя>:
+#             value: ${{ jobs.<job>.outputs.<output> }}
+on:
+  # TODO: замените push на workflow_call
+  push:
+
+  # TODO: [Задание 2] Объявите следующие inputs:
+  #   - java-version (string, default: '21') — версия JDK
+  #   - working-directory (string, default: 'kotlin-project') — путь к проекту
+
+  # TODO: [Задание 3] Объявите secret:
+  #   - SLACK_WEBHOOK (required: false)
+
+  # TODO: [Задание 4] Объявите output:
+  #   - test-result — значение берётся из jobs.test.outputs.result
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # TODO: [Задание 5] Объявите job-level output result,
+    #   который берёт значение из steps.status.outputs.value
+    # outputs:
+    #   result: TODO
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO: [Задание 6] Используйте input java-version для настройки JDK.
+      #   Обращение к input: ${{ inputs.java-version }}
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'   # TODO: замените на input
+          distribution: 'temurin'
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+
+      # TODO: [Задание 7] Используйте input working-directory.
+      - name: Run tests
+        working-directory: kotlin-project   # TODO: замените на input
+        run: ./gradlew test --no-daemon
+
+      # TODO: [Задание 8] Запишите статус job в output.
+      #   if: always() — чтобы шаг выполнился даже при падении тестов.
+      #   Значение: ${{ job.status }}  → записать в $GITHUB_OUTPUT как "value=..."
+      - name: Set result output
+        id: status
+        # TODO: if: ...
+        run: |
+          # TODO: echo "value=..." >> $GITHUB_OUTPUT

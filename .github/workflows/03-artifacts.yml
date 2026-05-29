@@ -1,0 +1,79 @@
+name: 03 · Artifacts — Build → Pass → Publish
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # Job 1: сборка
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build JAR
+        working-directory: kotlin-project
+        run: ./gradlew jar --no-daemon
+
+      # TODO: [Задание 1] Сохраните собранный JAR как артефакт.
+      #   Action: actions/upload-artifact@v4
+      #   Имя артефакта: app-jar
+      #   Путь: kotlin-project/build/libs/*.jar
+      #   Срок хранения: 30 дней (retention-days)
+      - name: Upload JAR artifact
+        # TODO
+
+  # Job 2: скачивает JAR из job build и запускает smoke-test
+  smoke-test:
+    # TODO: [Задание 2] Укажите зависимость от job build.
+    #   Этот job должен запускаться только после успешного завершения build.
+    #   Используйте: needs
+    # TODO: needs: ...
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      # TODO: [Задание 3] Скачайте артефакт app-jar из предыдущего job.
+      #   Action: actions/download-artifact@v4
+      #   Скачайте в директорию ./app
+      - name: Download JAR artifact
+        # TODO
+
+      # TODO: [Задание 4] Запустите JAR для проверки, что он не падает.
+      #   Команда: java -jar ./app/*.jar
+      - name: Smoke test
+        # TODO
+
+  # Job 3: публикует GitHub Release при пуше тега вида v*
+  publish-release:
+    needs: smoke-test
+    runs-on: ubuntu-latest
+
+    # TODO: [Задание 5] Этот job должен выполняться ТОЛЬКО при пуше тега вида v*.
+    #   Используйте условие: if: startsWith(github.ref, 'refs/tags/v')
+    # TODO: if: ...
+
+    # TODO: [Задание 6] Укажите permissions: contents: write
+    #   Это нужно для создания GitHub Release.
+    # TODO: permissions: ...
+
+    steps:
+      - name: Download JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+          path: ./dist
+
+      # TODO: [Задание 7] Создайте GitHub Release и приложите JAR.
+      #   Action: softprops/action-gh-release@v2
+      #   files: ./dist/*.jar
+      #   generate_release_notes: true
+      - name: Create GitHub Release
+        # TODO

@@ -1,0 +1,32 @@
+name: 07 · Caller — Uses Reusable Workflow
+
+on:
+  pull_request:
+
+jobs:
+  # TODO: [Задание 1] Вызовите reusable workflow из файла 06-reusable-workflow.yml.
+  #   Синтаксис вызова reusable workflow из того же репозитория:
+  #     uses: ./.github/workflows/<имя файла>
+  #
+  #   Передайте:
+  #     inputs:
+  #       java-version: '21'
+  #       working-directory: 'kotlin-project'
+  #     secrets:
+  #       SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  run-tests:
+    # TODO: uses: ...
+    # TODO: with: ...
+    # TODO: secrets: ...
+
+  # TODO: [Задание 2] Добавьте job, который использует output из run-tests.
+  #   Зависимость: needs: run-tests
+  #   Обращение к output: ${{ needs.run-tests.outputs.test-result }}
+  #   Выведите результат командой: echo "Tests result — ..."
+  report:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print test result
+        run: |
+          # TODO: выведите значение needs.run-tests.outputs.test-result

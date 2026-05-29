@@ -1,0 +1,81 @@
+name: 05 · Repo Automation — Labels, Stale, Dispatch
+
+# TODO: [Задание 1] Настройте три триггера одновременно:
+#   - pull_request с типами [opened, synchronize]
+#   - schedule: каждый понедельник в 9:00 (cron)
+#   - workflow_dispatch: ручной запуск с input-параметром reason (type: string)
+on:
+  # TODO
+
+jobs:
+  # ── Auto-labeling ──────────────────────────────────────────────────────
+  auto-label:
+    # TODO: [Задание 2] Job должен запускаться ТОЛЬКО при событии pull_request.
+    #   Используйте: if: github.event_name == 'pull_request'
+    # TODO: if: ...
+    runs-on: ubuntu-latest
+
+    # TODO: [Задание 3] Укажите минимальные permissions:
+    #   contents: read, pull-requests: write
+    # TODO: permissions: ...
+
+    steps:
+      # TODO: [Задание 4] Добавьте auto-labeling по изменённым файлам.
+      #   Action: actions/labeler@v5
+      #   Передайте repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #   Правила хранятся в .github/labeler.yml
+      - name: Auto-label PR
+        # TODO
+
+  # ── Stale issues/PRs ──────────────────────────────────────────────────
+  stale:
+    # TODO: [Задание 5] Job должен запускаться только при schedule или workflow_dispatch.
+    #   Используйте: if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    # TODO: if: ...
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      # TODO: [Задание 6] Настройте stale-бота.
+      #   Action: actions/stale@v9
+      #   Параметры:
+      #     stale-issue-message: сообщение о неактивности
+      #     stale-pr-message: сообщение для PR
+      #     days-before-stale: 30
+      #     days-before-close: 7
+      - name: Mark stale issues and PRs
+        # TODO
+
+  # ── GitHub Script (API) ───────────────────────────────────────────────
+  check-pr-size:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # TODO: [Задание 7] Подсчитайте количество добавленных строк в PR
+      #   и запишите результат в output с именем lines.
+      #   Команда для подсчёта строк diff:
+      #     git diff --stat origin/${{ github.base_ref }}...HEAD
+      #   Запись в output: echo "lines=<число>" >> $GITHUB_OUTPUT
+      - name: Count diff lines
+        id: diff
+        run: |
+          # TODO
+
+      # TODO: [Задание 8] Если PR добавляет больше 500 строк — повесьте label "big-pr".
+      #   Action: actions/github-script@v7
+      #   Условие: if: ${{ steps.diff.outputs.lines > 500 }}
+      #   Используйте github.rest.issues.addLabels(...)
+      - name: Label big PRs
+        # TODO: if: ...
+        uses: actions/github-script@v7
+        with:
+          script: |
+            # TODO: вызовите API для добавления label 'big-pr'
